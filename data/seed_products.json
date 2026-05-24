@@ -1,0 +1,17 @@
+[
+  {"name": "Festival Lemonade", "category": "Drinks", "unit_cost": 1.50, "sell_price": 5.00, "stock_quantity": 200},
+  {"name": "Iced Tea", "category": "Drinks", "unit_cost": 0.80, "sell_price": 4.00, "stock_quantity": 85},
+  {"name": "Sparkling Water", "category": "Drinks", "unit_cost": 0.50, "sell_price": 3.00, "stock_quantity": 120},
+  {"name": "Craft Soda", "category": "Drinks", "unit_cost": 1.00, "sell_price": 4.50, "stock_quantity": 65},
+  {"name": "Loaded Nachos", "category": "Food", "unit_cost": 3.00, "sell_price": 10.00, "stock_quantity": 75},
+  {"name": "Festival Burger", "category": "Food", "unit_cost": 4.50, "sell_price": 14.00, "stock_quantity": 55},
+  {"name": "Veggie Wrap", "category": "Food", "unit_cost": 2.50, "sell_price": 9.00, "stock_quantity": 40},
+  {"name": "Kettle Corn", "category": "Food", "unit_cost": 1.50, "sell_price": 6.00, "stock_quantity": 110},
+  {"name": "Tie-Dye T-Shirt", "category": "Merchandise", "unit_cost": 8.00, "sell_price": 25.00, "stock_quantity": 45},
+  {"name": "Festival Hoodie", "category": "Merchandise", "unit_cost": 15.00, "sell_price": 45.00, "stock_quantity": 30},
+  {"name": "Band Poster", "category": "Merchandise", "unit_cost": 2.00, "sell_price": 12.00, "stock_quantity": 18},
+  {"name": "Enamel Pin Set", "category": "Merchandise", "unit_cost": 3.00, "sell_price": 15.00, "stock_quantity": 60},
+  {"name": "Glow Stick Pack", "category": "Accessories", "unit_cost": 2.00, "sell_price": 8.00, "stock_quantity": 150},
+  {"name": "Sunscreen SPF 50", "category": "Accessories", "unit_cost": 3.00, "sell_price": 12.00, "stock_quantity": 12},
+  {"name": "Reusable Water Bottle", "category": "Accessories", "unit_cost": 5.00, "sell_price": 18.00, "stock_quantity": 35}
+]
