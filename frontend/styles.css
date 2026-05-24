@@ -244,8 +244,9 @@ input {
 }
 
 .nav-item.active {
-  background: var(--primary);
+  background-color: var(--primary);
   color: var(--primary-foreground);
+  font-weight: 500;
 }
 
 .nav-icon {

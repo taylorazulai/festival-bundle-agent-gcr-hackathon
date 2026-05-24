@@ -6,6 +6,7 @@ import asyncio
 import json
 import logging
 import os
+import shutil
 from typing import Any
 
 logger = logging.getLogger(__name__)
@@ -29,7 +30,7 @@ class MCPClient:
         self._next_id = 1
         self._lock = asyncio.Lock()
 
-    async def connect(self, timeout: float = 12.0) -> bool:
+    async def connect(self, timeout: float = 15.0) -> bool:
         """Start the MCP server subprocess and perform initialize handshake."""
         if self._initialized:
             return True
@@ -41,13 +42,19 @@ class MCPClient:
         env = os.environ.copy()
         env["MDB_MCP_CONNECTION_STRING"] = self.connection_string
 
+        if not shutil.which("mongodb-mcp-server"):
+            logger.warning(
+                "MCP: mongodb-mcp-server binary not found in PATH for current user"
+            )
+            return False
+
         try:
             logger.info("MCP: Starting mongodb-mcp-server subprocess...")
             self.process = await asyncio.create_subprocess_exec(
                 "mongodb-mcp-server",
                 stdin=asyncio.subprocess.PIPE,
                 stdout=asyncio.subprocess.PIPE,
-                stderr=asyncio.subprocess.PIPE,
+                stderr=asyncio.subprocess.DEVNULL,
                 env=env,
             )
             logger.info("MCP: Subprocess started. PID=%s", self.process.pid)
@@ -64,6 +71,7 @@ class MCPClient:
             }
 
             await self._send(init_msg)
+            await asyncio.sleep(0.5)
             init_resp = await asyncio.wait_for(self._receive(), timeout=timeout)
 
             if "error" in init_resp:

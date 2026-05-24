@@ -19,6 +19,7 @@ const footerStatusText = document.getElementById("footer-status-text");
 let lastMessage = "";
 let loadingEl = null;
 let welcomeEl = null;
+let isLoading = false;
 
 const CHAT_TIMEOUT_MS = 15000;
 const HEALTH_POLL_MS = 6000;
@@ -297,10 +298,51 @@ function setSidebarOpen(isOpen) {
   menuBtn.setAttribute("aria-expanded", String(isOpen));
 }
 
+function closeSidebar() {
+  setSidebarOpen(false);
+}
+
+function updateActiveNav(viewName) {
+  document.querySelectorAll(".nav-item").forEach((el) => {
+    el.classList.toggle("active", el.dataset.view === viewName);
+  });
+}
+
+function showDashboard() {
+  chatMessages.innerHTML = "";
+  welcomeEl = null;
+  loadingEl = null;
+  renderWelcome();
+  updateActiveNav("dashboard");
+  if (window.innerWidth < 768) closeSidebar();
+}
+
+function showChat() {
+  updateActiveNav("chat");
+  messageInput.focus();
+  scrollToBottom(true);
+  if (window.innerWidth < 768) closeSidebar();
+}
+
+function triggerQuery(queryText) {
+  if (isLoading) return;
+
+  if (welcomeEl || document.querySelector(".welcome")) {
+    chatMessages.innerHTML = "";
+    welcomeEl = null;
+  }
+
+  updateActiveNav("chat");
+  sendMessage(queryText);
+
+  if (window.innerWidth < 768) closeSidebar();
+}
+
 async function sendMessage(text) {
   const message = (text || messageInput.value).trim();
-  if (!message) return;
+  if (!message || isLoading) return;
 
+  isLoading = true;
   lastMessage = message;
   messageInput.value = "";
   hideError();
@@ -340,6 +382,7 @@ async function sendMessage(text) {
     }
   } finally {
     clearTimeout(timeoutId);
+    isLoading = false;
     sendBtn.disabled = false;
     messageInput.focus();
   }
@@ -432,14 +475,18 @@ menuBtn.addEventListener("click", () => {
 sidebarOverlay.addEventListener("click", () => setSidebarOpen(false));
 
 document.querySelectorAll(".nav-item").forEach((item) => {
-  item.addEventListener("click", () => {
-    document.querySelectorAll(".nav-item").forEach((n) => n.classList.remove("active"));
-    item.classList.add("active");
-    setSidebarOpen(false);
+  item.addEventListener("click", (e) => {
+    e.preventDefault();
+    const view = item.dataset.view;
+    if (view === "dashboard") showDashboard();
+    else if (view === "chat") showChat();
+    else if (view === "inventory") triggerQuery("Show all inventory items");
+    else if (view === "bundles") triggerQuery("What bundles can I create?");
   });
 });
 
 renderWelcome();
+updateActiveNav("dashboard");
 pollHealthOnce();
 setInterval(pollHealthOnce, HEALTH_POLL_MS);
 setScrollBtnVisibility();
