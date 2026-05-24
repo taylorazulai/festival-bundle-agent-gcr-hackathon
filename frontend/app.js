@@ -5,11 +5,6 @@ const errorBanner = document.getElementById("error-banner");
 const errorText = document.getElementById("error-text");
 const retryBtn = document.getElementById("retry-btn");
 const scrollBottomBtn = document.getElementById("scroll-bottom-btn");
-const recentList = document.getElementById("recent-list");
-
-const menuBtn = document.getElementById("menu-btn");
-const sidebar = document.getElementById("sidebar");
-const sidebarOverlay = document.getElementById("sidebar-overlay");
 
 const pillMongo = document.getElementById("pill-mongo");
 const pillGemini = document.getElementById("pill-gemini");
@@ -248,22 +243,6 @@ function renderBundleCard(bundle) {
   return el;
 }
 
-function updateRecentItemsFromBundles(bundles) {
-  const names = new Set();
-  bundles.forEach((b) => {
-    (Array.isArray(b?.items) ? b.items : []).forEach((it) => names.add(it));
-  });
-  const list = Array.from(names).slice(0, 8);
-  if (list.length === 0) return;
-
-  recentList.innerHTML = "";
-  list.forEach((n) => {
-    const li = document.createElement("li");
-    li.textContent = n;
-    recentList.appendChild(li);
-  });
-}
-
 function renderAgentMessage(text, bundles = []) {
   clearWelcome();
 
@@ -279,7 +258,6 @@ function renderAgentMessage(text, bundles = []) {
     cardsWrap.className = "bundle-cards";
     bundles.forEach((b) => cardsWrap.appendChild(renderBundleCard(b)));
     bubble.appendChild(cardsWrap);
-    updateRecentItemsFromBundles(bundles);
   }
 
   const time = document.createElement("div");
@@ -292,52 +270,6 @@ function renderAgentMessage(text, bundles = []) {
   scrollToBottom(true);
 }
 
-function setSidebarOpen(isOpen) {
-  sidebar.classList.toggle("is-open", isOpen);
-  sidebarOverlay.hidden = !isOpen;
-  menuBtn.setAttribute("aria-expanded", String(isOpen));
-}
-
-function closeSidebar() {
-  setSidebarOpen(false);
-}
-
-function updateActiveNav(viewName) {
-  document.querySelectorAll(".nav-item").forEach((el) => {
-    el.classList.toggle("active", el.dataset.view === viewName);
-  });
-}
-
-function showDashboard() {
-  chatMessages.innerHTML = "";
-  welcomeEl = null;
-  loadingEl = null;
-  renderWelcome();
-  updateActiveNav("dashboard");
-  if (window.innerWidth < 768) closeSidebar();
-}
-
-function showChat() {
-  updateActiveNav("chat");
-  messageInput.focus();
-  scrollToBottom(true);
-  if (window.innerWidth < 768) closeSidebar();
-}
-
-function triggerQuery(queryText) {
-  if (isLoading) return;
-
-  if (welcomeEl || document.querySelector(".welcome")) {
-    chatMessages.innerHTML = "";
-    welcomeEl = null;
-  }
-
-  updateActiveNav("chat");
-  sendMessage(queryText);
-
-  if (window.innerWidth < 768) closeSidebar();
-}
-
 async function sendMessage(text) {
   const message = (text || messageInput.value).trim();
   if (!message || isLoading) return;
@@ -347,7 +279,6 @@ async function sendMessage(text) {
   messageInput.value = "";
   hideError();
   sendBtn.disabled = true;
-  setSidebarOpen(false);
 
   renderUserMessage(message);
   renderLoading();
@@ -467,26 +398,7 @@ chatMessages.addEventListener("click", async (e) => {
   }
 });
 
-menuBtn.addEventListener("click", () => {
-  const open = sidebar.classList.contains("is-open");
-  setSidebarOpen(!open);
-});
-
-sidebarOverlay.addEventListener("click", () => setSidebarOpen(false));
-
-document.querySelectorAll(".nav-item").forEach((item) => {
-  item.addEventListener("click", (e) => {
-    e.preventDefault();
-    const view = item.dataset.view;
-    if (view === "dashboard") showDashboard();
-    else if (view === "chat") showChat();
-    else if (view === "inventory") triggerQuery("Show all inventory items");
-    else if (view === "bundles") triggerQuery("What bundles can I create?");
-  });
-});
-
 renderWelcome();
-updateActiveNav("dashboard");
 pollHealthOnce();
 setInterval(pollHealthOnce, HEALTH_POLL_MS);
 setScrollBtnVisibility();

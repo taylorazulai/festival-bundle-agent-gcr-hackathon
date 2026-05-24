@@ -24,7 +24,6 @@
   --font-sans: Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
   --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
   --header-h: 3.5rem;
-  --sidebar-w: 240px;
   --footer-h: 2.25rem;
   --shadow-sm: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
   --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
@@ -98,7 +97,7 @@ input {
   align-items: center;
   justify-content: space-between;
   height: var(--header-h);
-  padding: 0 1rem 0 0.75rem;
+  padding: 0 1rem;
   background: var(--background);
   border-bottom: 1px solid var(--border);
 }
@@ -108,23 +107,6 @@ input {
   align-items: center;
   gap: 0.5rem;
   min-width: 0;
-}
-
-.menu-btn {
-  display: none;
-  align-items: center;
-  justify-content: center;
-  width: 2.25rem;
-  height: 2.25rem;
-  border: none;
-  border-radius: var(--radius);
-  background: transparent;
-  color: var(--foreground);
-  transition: background 150ms ease;
-}
-
-.menu-btn:hover {
-  background: var(--muted);
 }
 
 .logo {
@@ -192,129 +174,12 @@ input {
   flex: 1;
   min-height: 0;
   position: relative;
-}
-
-/* Sidebar */
-.sidebar {
-  width: var(--sidebar-w);
-  flex-shrink: 0;
-  background: var(--muted);
-  border-right: 1px solid var(--border);
-  display: flex;
-  flex-direction: column;
-  padding: 0.75rem;
-  overflow-y: auto;
-}
-
-.sidebar-nav {
-  display: flex;
-  flex-direction: column;
-  gap: 0.25rem;
-}
-
-.nav-item {
-  display: flex;
-  align-items: center;
-  gap: 0.625rem;
   width: 100%;
-  padding: 0.5rem 0.75rem;
-  border: none;
-  border-radius: var(--radius);
-  background: transparent;
-  color: var(--foreground);
-  font-size: 0.875rem;
-  font-weight: 500;
-  text-align: left;
-  transition: background 150ms ease, color 150ms ease, transform 150ms ease;
-  animation: navFadeIn 200ms ease-out backwards;
 }
 
-.nav-item:nth-child(1) { animation-delay: 0ms; }
-.nav-item:nth-child(2) { animation-delay: 50ms; }
-.nav-item:nth-child(3) { animation-delay: 100ms; }
-.nav-item:nth-child(4) { animation-delay: 150ms; }
-
-@keyframes navFadeIn {
-  from { opacity: 0; transform: translateX(-6px); }
-  to { opacity: 1; transform: translateX(0); }
-}
-
-.nav-item:hover {
-  background: var(--accent);
-}
-
-.nav-item.active {
-  background-color: var(--primary);
-  color: var(--primary-foreground);
-  font-weight: 500;
-}
-
-.nav-icon {
-  font-size: 1rem;
-  width: 1.25rem;
-  text-align: center;
-}
-
-.sidebar-section {
-  margin-top: 1.25rem;
-  padding-top: 1rem;
-  border-top: 1px solid var(--border);
-}
-
-.sidebar-heading {
-  font-size: 0.6875rem;
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-  color: var(--muted-foreground);
-  margin-bottom: 0.5rem;
-  padding: 0 0.5rem;
-}
-
-.recent-list {
-  list-style: none;
-  padding: 0;
-  margin: 0;
-}
-
-.recent-list li {
-  padding: 0.35rem 0.5rem;
-  font-size: 0.8125rem;
-  color: var(--foreground);
-  border-radius: calc(var(--radius) - 2px);
-}
-
-.recent-list li::before {
-  content: "•";
-  color: var(--primary);
-  margin-right: 0.4rem;
-}
-
-.recent-empty {
-  color: var(--muted-foreground);
-  font-size: 0.75rem;
-}
-
-.recent-empty::before {
-  content: none;
-}
-
-.sidebar-overlay {
-  display: none;
-  position: fixed;
-  inset: 0;
-  top: var(--header-h);
-  background: rgb(0 0 0 / 0.4);
-  z-index: 30;
-}
-
-.sidebar-overlay:not([hidden]) {
-  display: block;
-}
-
-/* Chat main */
 .chat-main {
-  flex: 1;
+  flex: 1 1 100%;
+  width: 100%;
   display: flex;
   flex-direction: column;
   min-width: 0;
@@ -932,25 +797,6 @@ input {
 }
 
 @media (max-width: 768px) {
-  .menu-btn {
-    display: flex;
-  }
-
-  .sidebar {
-    position: fixed;
-    top: var(--header-h);
-    left: 0;
-    bottom: var(--footer-h);
-    z-index: 35;
-    transform: translateX(-100%);
-    transition: transform 200ms ease;
-    box-shadow: var(--shadow-md);
-  }
-
-  .sidebar.is-open {
-    transform: translateX(0);
-  }
-
   .header-pills .pill:not(.pill-live) {
     display: none;
   }
@@ -971,11 +817,5 @@ input {
   .scroll-bottom-btn {
     right: 0.875rem;
     bottom: 7rem;
-  }
-}
-
-@media (min-width: 769px) {
-  .sidebar-overlay {
-    display: none !important;
   }
 }
