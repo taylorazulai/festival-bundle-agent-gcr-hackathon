@@ -511,6 +511,14 @@ async def startup_event() -> None:
     asyncio.create_task(_initialize_agent())
 
 
+@app.on_event("shutdown")
+async def shutdown_event() -> None:
+    global _mcp_client
+    if _mcp_client:
+        logger.info("SHUTDOWN: Closing MCP client...")
+        await _mcp_client.close()
+
+
 # ============================================================
 # CHAT ENDPOINT
 # ============================================================
