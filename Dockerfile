@@ -8,6 +8,8 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     && apt-get install -y --no-install-recommends nodejs \
     && rm -rf /var/lib/apt/lists/*
 
+RUN npm install -g mongodb-mcp-server@latest
+
 WORKDIR /app
 
 ENV PYTHONDONTWRITEBYTECODE=1

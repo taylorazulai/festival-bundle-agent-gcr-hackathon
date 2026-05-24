@@ -29,7 +29,7 @@ class MCPClient:
         self._next_id = 1
         self._lock = asyncio.Lock()
 
-    async def connect(self, timeout: float = 8.0) -> bool:
+    async def connect(self, timeout: float = 12.0) -> bool:
         """Start the MCP server subprocess and perform initialize handshake."""
         if self._initialized:
             return True
@@ -44,14 +44,13 @@ class MCPClient:
         try:
             logger.info("MCP: Starting mongodb-mcp-server subprocess...")
             self.process = await asyncio.create_subprocess_exec(
-                "npx",
-                "-y",
-                "mongodb-mcp-server@latest",
+                "mongodb-mcp-server",
                 stdin=asyncio.subprocess.PIPE,
                 stdout=asyncio.subprocess.PIPE,
                 stderr=asyncio.subprocess.PIPE,
                 env=env,
             )
+            logger.info("MCP: Subprocess started. PID=%s", self.process.pid)
 
             init_msg = {
                 "jsonrpc": "2.0",
@@ -93,7 +92,7 @@ class MCPClient:
 
         except FileNotFoundError:
             logger.warning(
-                "MCP: 'npx' not found. Node.js may not be installed in this environment."
+                "MCP: 'mongodb-mcp-server' not found. Install it globally in the image."
             )
             return False
         except asyncio.TimeoutError:
