@@ -2,6 +2,7 @@
 
 **Your AI-powered festival inventory bundling assistant** — built for the Google Cloud Rapid Agent Hackathon (MongoDB Partner Track).
 
+> Repository: [festival-bundle-agent-gcr-hackathon](https://github.com/taylorazulai/festival-bundle-agent-gcr-hackathon)  
 > Demo: _[Add hosted URL after Cloud Run deployment]_
 
 ## What It Does
@@ -20,7 +21,7 @@ The agent queries MongoDB Atlas inventory, analyzes margins and stock levels, an
 |-------|------------|
 | Agent | Google ADK / Gemini (function calling) |
 | Model | Gemini 2.0 Flash (configurable via `AGENT_MODEL`) |
-| Database | MongoDB Atlas (pymongo) |
+| Database | MongoDB Atlas (pymongo + official MCP Server) |
 | API | FastAPI + Uvicorn |
 | Frontend | Vanilla HTML/CSS/JS chat UI |
 | Deployment | Docker, Cloud Run ready |
@@ -32,6 +33,7 @@ The agent queries MongoDB Atlas inventory, analyzes margins and stock levels, an
 - Python 3.11+
 - MongoDB Atlas cluster (or use local JSON fallback)
 - Google AI API key ([aistudio.google.com](https://aistudio.google.com))
+- Node.js 20+ (for MongoDB MCP Server in production Docker image)
 
 ### Quick Start
 
@@ -59,6 +61,7 @@ Open **http://localhost:8080**
 | Variable | Description | Default |
 |----------|-------------|---------|
 | `MONGO_URI` | MongoDB Atlas connection string | — |
+| `MDB_MCP_CONNECTION_STRING` | MCP server connection string (falls back to `MONGO_URI`) | — |
 | `GEMINI_API_KEY` | Google AI API key | — |
 | `AGENT_MODEL` | Gemini model name | `gemini-2.0-flash` |
 | `USE_LOCAL_DATA` | Use seed JSON instead of MongoDB | `false` |
@@ -91,6 +94,8 @@ docker compose up
 4. Deploy: `bash deploy.sh`
 5. Submit the resulting URL to Devpost
 
+See [MCP_SETUP.md](MCP_SETUP.md) for MongoDB MCP Server integration details.
+
 ## Project Structure
 
 ```
@@ -98,6 +103,7 @@ festival-bundle-agent/
 ├── src/
 │   ├── agent_main.py      # Agent + FastAPI entry point
 │   ├── agent_config.py    # Persona and model config
+│   ├── mcp_client.py      # MongoDB MCP Server bridge
 │   ├── tools/             # Inventory, bundles, pricing, promo, MCP tools
 │   ├── db/                # MongoDB client and seeding
 │   ├── api/               # Secondary server entry point
