@@ -8,13 +8,11 @@
 > AI-powered inventory and bundle optimization for festival vendors.  
 > Built for the [Google Cloud Rapid Agent Hackathon](https://rapid-agent.devpost.com/) — MongoDB Partner Track.
 
-**[🚀 Try it live](https://festival-agent-t5j6ocuqwa-uc.a.run.app)** · **[📦 Repository](https://github.com/taylorazulai/festival-bundle-agent-gcr-hackathon)**
+## 🎪 Live Demo
 
----
+**[Try it now →](https://festival-agent-t5j6ocuqwa-uc.a.run.app)**
 
-## 📸 Preview
-
-![Festival Bundle Agent — Bundle recommendations with pricing and margins](docs/screenshot.png)
+![Festival Bundle Agent — Welcome screen with inventory tools](docs/welcome-screen.png)
 
 ---
 
