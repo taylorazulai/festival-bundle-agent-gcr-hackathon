@@ -74,7 +74,7 @@ Open the [live demo](https://festival-agent-t5j6ocuqwa-uc.a.run.app) and try:
               ┌────────────────┼────────────────┐
               ▼                ▼                ▼
        ┌──────────┐     ┌───────────┐     ┌──────────┐
-       │ PyMongo  │     │ MongoDB   │     │ Rule-Based│
+       │ PyMongo  │     │ MongoDB   │     │Rule-Based│
        │(fallback)│     │ MCP Server│     │ Fallback │
        └────┬─────┘     └─────┬─────┘     └──────────┘
             │                 │
