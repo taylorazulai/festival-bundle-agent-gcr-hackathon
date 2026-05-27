@@ -37,9 +37,9 @@ npx -y mongodb-mcp-server@latest
 
 ## Cloud Run Deployment
 
-The Dockerfile installs Node.js so `npx mongodb-mcp-server@latest` works inside
-the container. The agent initializes the MCP client during startup and falls
-back to pymongo if the MCP server is unavailable.
+The Dockerfile installs Node.js and pre-installs `mongodb-mcp-server`, so the agent can
+spawn the MCP process over stdio inside the container. The agent initializes the MCP
+client during startup and falls back to pymongo if the MCP server is unavailable.
 
 Ensure Atlas **Network Access** allows Cloud Run (`0.0.0.0/0`) and the database user has
 **readWrite** on the database named in `MONGO_DB_NAME` (default: `festival_bundle_agent`).

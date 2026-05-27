@@ -23,6 +23,11 @@
 
 ![Bundle recommendations](docs/bundle-cards.png)
 
+## DEMO
+
+📹 Demo  
+[Watch the demo video](YOUR_YOUTUBE_LINK_HERE)
+
 ---
 
 ## Problem & Solution
@@ -99,7 +104,7 @@ See [MCP_SETUP.md](MCP_SETUP.md) for connection strings, local testing, and Clou
 
 ```bash
 git clone https://github.com/taylorazulai/festival-bundle-agent-gcr-hackathon.git
-cd festival-bundle-agent
+cd festival-bundle-agent-gcr-hackathon
 cp .env.example .env   # add your keys
 docker build -t festival-agent .
 docker run -p 8080:8080 --env-file .env festival-agent
