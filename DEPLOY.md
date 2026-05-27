@@ -4,7 +4,7 @@ Production deployment for Festival Bundle Agent.
 
 ## Steps
 
-1. **Seed Atlas** (once): `python scripts/seed_atlas.py`
+1. **Seed Atlas** (once): from the repo root, run `python3 scripts/seed_atlas.py` (venv and `.env` with `MONGO_URI` as in [SETUP.md](SETUP.md))
 2. **Store secrets** from `.env`: `bash scripts/setup_gcp_secrets.sh`
 3. **Deploy**: `bash deploy.sh`
 

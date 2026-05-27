@@ -21,11 +21,11 @@ chmod +x setup.sh
 ```bash
 python3 -m venv venv
 source venv/bin/activate
-pip install -r requirements.txt
+python3 -m pip install -r requirements.txt
 cp .env.example .env
 # Edit .env — at minimum set GEMINI_API_KEY; set MONGO_URI for Atlas
-python src/db/seed_data.py
-python src/agent_main.py
+python3 src/db/seed_data.py
+python3 src/agent_main.py
 ```
 
 Open **http://localhost:8080**
@@ -49,8 +49,8 @@ Open **http://localhost:8080**
 
 ```bash
 source venv/bin/activate
-pytest tests/ -v
-python tests/test_scenarios.py
+python3 -m pytest tests/ -v
+python3 tests/test_scenarios.py
 ```
 
 ## Docker (local)

@@ -15,8 +15,8 @@ fi
 echo "Activating venv and installing dependencies..."
 # shellcheck disable=SC1091
 source venv/bin/activate
-pip install --upgrade pip -q
-pip install -r requirements.txt -q
+python3 -m pip install --upgrade pip -q
+python3 -m pip install -r requirements.txt -q
 
 if [ ! -f ".env" ]; then
   echo "Creating .env from .env.example..."
@@ -26,7 +26,7 @@ fi
 
 echo "Seeding database (or loading local data)..."
 export USE_LOCAL_DATA="${USE_LOCAL_DATA:-true}"
-python src/db/seed_data.py
+python3 src/db/seed_data.py
 
 echo ""
 echo "✅ Setup complete!"
@@ -39,13 +39,13 @@ echo "     - Set USE_LOCAL_DATA=false to use MongoDB Atlas"
 echo ""
 echo "  2. Run locally:"
 echo "     source venv/bin/activate"
-echo "     python src/agent_main.py"
+echo "     python3 src/agent_main.py"
 echo ""
 echo "  3. Open http://localhost:8080 in your browser"
 echo ""
 echo "  4. Run tests:"
-echo "     pytest tests/ -v"
-echo "     python tests/test_scenarios.py"
+echo "     python3 -m pytest tests/ -v"
+echo "     python3 tests/test_scenarios.py"
 echo ""
 echo "  5. Docker:"
 echo "     docker build -t festival-agent ."
