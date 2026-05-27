@@ -81,8 +81,7 @@ Open the [live demo](https://festival-agent-t5j6ocuqwa-uc.a.run.app) and try:
             └────────┬────────┘
                      ▼
               ┌──────────────┐
-              │ MongoDB Atlas│
-              │   (M0 Free)  │
+              │MongoDB Atlas!│
               └──────────────┘
 ```
 
