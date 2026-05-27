@@ -14,6 +14,15 @@
 
 ![Festival Bundle Agent — Welcome screen with inventory tools](docs/welcome-screen.png)
 
+## ✨ Features
+
+- **Natural language inventory queries** — "Show overstocked items" returns live MongoDB data
+- **AI bundle generation** — Automatically combines complementary products with target discounts
+- **Margin analysis** — Cost, retail, bundle price, and margin percentage for every recommendation
+- **Promotional copy** — Taglines, descriptions, and social captions ready to use
+
+![Bundle recommendations](docs/bundle-cards.png)
+
 ---
 
 ## Problem & Solution
