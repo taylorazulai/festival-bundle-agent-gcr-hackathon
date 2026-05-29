@@ -62,13 +62,72 @@ _agent_loop: Any = None
 _db_client: Any = None
 _mcp_client: Any = None
 _startup_complete = False
+_gemini_api_blocked = False
 _tool_functions: dict[str, Any] = {}
 _tool_declarations: list[dict[str, Any]] = []
 
 
 def _gemini_configured() -> bool:
     api_key = os.getenv("GEMINI_API_KEY", "").strip()
-    return bool(api_key and api_key != "your-gemini-api-key")
+    return bool(api_key and api_key not in ("your-gemini-api-key", "paste-your-key-here"))
+
+
+def _agent_runtime_status() -> dict[str, Any]:
+    """Whether chat uses Gemini/ADK or the keyword-based fallback."""
+    configured = _gemini_configured()
+    if not _startup_complete:
+        return {
+            "fallback_mode": False,
+            "initializing": True,
+            "gemini_configured": configured,
+            "fallback_reason": None,
+        }
+
+    if not configured:
+        return {
+            "fallback_mode": True,
+            "initializing": False,
+            "gemini_configured": False,
+            "fallback_reason": "no_api_key",
+        }
+
+    if _agent_loop is None:
+        return {
+            "fallback_mode": True,
+            "initializing": False,
+            "gemini_configured": True,
+            "fallback_reason": "agent_init_failed",
+        }
+
+    if _gemini_api_blocked:
+        loop = _agent_loop
+        uses_adk = bool(getattr(loop, "_use_adk", False) and getattr(loop, "_adk_agent", None))
+        return {
+            "fallback_mode": True,
+            "initializing": False,
+            "gemini_configured": True,
+            "fallback_reason": "api_key_service_blocked",
+            "agent_backend": "adk" if uses_adk else "genai",
+        }
+
+    loop = _agent_loop
+    uses_adk = bool(getattr(loop, "_use_adk", False) and getattr(loop, "_adk_agent", None))
+    uses_genai = getattr(loop, "_client", None) is not None
+    if uses_adk or uses_genai:
+        return {
+            "fallback_mode": False,
+            "initializing": False,
+            "gemini_configured": True,
+            "fallback_reason": None,
+            "agent_backend": "adk" if uses_adk else "genai",
+        }
+
+    return {
+        "fallback_mode": True,
+        "initializing": False,
+        "gemini_configured": True,
+        "fallback_reason": "gemini_client_unavailable",
+    }
 
 
 # ============================================================
@@ -79,6 +138,7 @@ def _gemini_configured() -> bool:
 @app.get("/health")
 async def health() -> dict[str, Any]:
     """Works instantly on startup. Reports init status."""
+    runtime = _agent_runtime_status()
     return {
         "status": "healthy",
         "server": "running",
@@ -87,6 +147,10 @@ async def health() -> dict[str, Any]:
         "mcp": "connected" if _mcp_client and getattr(_mcp_client, "_initialized", False) else "initializing",
         "agent": "ready" if _agent_loop else "initializing",
         "gemini": _gemini_configured(),
+        "gemini_configured": runtime["gemini_configured"],
+        "fallback_mode": runtime["fallback_mode"],
+        "fallback_reason": runtime.get("fallback_reason"),
+        "agent_backend": runtime.get("agent_backend"),
         "version": APP_VERSION,
     }
 
@@ -107,6 +171,16 @@ async def ready() -> dict[str, str]:
 def _api_error_is_blocked(error: str) -> bool:
     blocked_markers = ("403", "PERMISSION_DENIED", "API_KEY_SERVICE_BLOCKED")
     return any(marker in error for marker in blocked_markers)
+
+
+def _mark_gemini_api_blocked(error: str) -> None:
+    global _gemini_api_blocked
+    if _api_error_is_blocked(error):
+        _gemini_api_blocked = True
+        logger.error(
+            "Gemini API blocked for this key (API_KEY_SERVICE_BLOCKED). "
+            "Enable Generative Language API and key access, or use a Google AI Studio key."
+        )
 
 
 def _execute_tool(name: str, args: dict[str, Any]) -> dict[str, Any]:
@@ -146,7 +220,7 @@ class GeminiAgentLoop:
 
     def _init_backend(self) -> None:
         api_key = os.getenv("GEMINI_API_KEY", "").strip()
-        if not api_key or api_key == "your-gemini-api-key":
+        if not _gemini_configured():
             logger.warning("GEMINI_API_KEY not set — agent will use rule-based fallback responses")
             return
 
@@ -283,6 +357,7 @@ class GeminiAgentLoop:
                 error_text = str(exc)
                 logger.warning("ADK run failed, falling back: %s", error_text)
                 if _api_error_is_blocked(error_text):
+                    _mark_gemini_api_blocked(error_text)
                     from src.agent_fallback import process_message_fallback
 
                     result = await process_message_fallback(message)
@@ -292,10 +367,15 @@ class GeminiAgentLoop:
             try:
                 return await asyncio.to_thread(self.run_genai, message)
             except Exception as exc:
-                logger.error("GenAI run failed: %s", exc)
+                error_text = str(exc)
+                logger.error("GenAI run failed: %s", error_text)
+                if _api_error_is_blocked(error_text):
+                    _mark_gemini_api_blocked(error_text)
                 from src.agent_fallback import process_message_fallback
 
                 result = await process_message_fallback(message)
+                if _api_error_is_blocked(error_text):
+                    return result["response"], result["tool_calls"]
                 return f"Agent error: {exc}. Using rule-based fallback.\n\n{result['response']}", result["tool_calls"]
 
         from src.agent_fallback import process_message_fallback

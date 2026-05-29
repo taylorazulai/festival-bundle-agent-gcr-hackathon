@@ -23,9 +23,26 @@
       <div class="header-pills" aria-label="Service status">
         <span class="pill pill-live"><span class="pill-dot"></span>Live</span>
         <span class="pill" id="pill-mongo"><span class="pill-dot"></span>MongoDB</span>
-        <span class="pill" id="pill-gemini"><span class="pill-dot"></span>Gemini</span>
+        <span class="pill" id="pill-gemini"><span class="pill-dot"></span><span id="pill-gemini-label">Gemini</span></span>
       </div>
     </header>
+
+    <div
+      id="fallback-banner"
+      class="fallback-banner hidden"
+      role="status"
+      aria-live="polite"
+    >
+      <div class="fallback-banner-inner">
+        <span class="fallback-banner-icon" aria-hidden="true">ℹ️</span>
+        <div class="fallback-banner-copy">
+          <p class="fallback-banner-title">Running in fallback mode</p>
+          <p id="fallback-banner-text" class="fallback-banner-message">
+            Responses use simple keyword rules, not Gemini. Promo and copy prompts may repeat.
+          </p>
+        </div>
+      </div>
+    </div>
 
     <div class="app-body">
       <main class="chat-main">

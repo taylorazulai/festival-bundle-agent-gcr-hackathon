@@ -37,7 +37,7 @@ gcloud run deploy festival-agent \
   --platform managed \
   --region us-central1 \
   --allow-unauthenticated \
-  --set-env-vars="AGENT_MODEL=gemini-2.0-flash,LOG_LEVEL=INFO,USE_LOCAL_DATA=false" \
+  --set-env-vars="AGENT_MODEL=gemini-3.1-flash-lite,LOG_LEVEL=INFO,USE_LOCAL_DATA=false" \
   --set-secrets="MONGO_URI=mongo-uri:latest,GEMINI_API_KEY=gemini-api-key:latest"
 
 echo "Done. URL:"

@@ -19,7 +19,7 @@ services:
       - MONGO_URI=mongodb://mongo:27017/festival_bundle_agent
       - USE_LOCAL_DATA=false
       - GEMINI_API_KEY=${GEMINI_API_KEY:-}
-      - AGENT_MODEL=${AGENT_MODEL:-gemini-2.0-flash}
+      - AGENT_MODEL=${AGENT_MODEL:-gemini-3.1-flash-lite}
       - LOG_LEVEL=INFO
       - PORT=8080
     depends_on:

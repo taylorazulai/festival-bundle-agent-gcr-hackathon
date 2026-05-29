@@ -8,8 +8,24 @@ const scrollBottomBtn = document.getElementById("scroll-bottom-btn");
 
 const pillMongo = document.getElementById("pill-mongo");
 const pillGemini = document.getElementById("pill-gemini");
+const pillGeminiLabel = document.getElementById("pill-gemini-label");
+const fallbackBanner = document.getElementById("fallback-banner");
+const fallbackBannerText = document.getElementById("fallback-banner-text");
 const footerDot = document.getElementById("footer-dot");
 const footerStatusText = document.getElementById("footer-status-text");
+
+const FALLBACK_BANNER_COPY = {
+  no_api_key:
+    "Set GEMINI_API_KEY in festival-bundle-agent/.env (from Google AI Studio), then restart the server. Until then, answers use keyword rules only.",
+  agent_init_failed:
+    "Your API key is set, but the agent failed to start. Restart the server from festival-bundle-agent/ and check the terminal logs.",
+  gemini_client_unavailable:
+    "Your API key is set, but Gemini did not connect (invalid key, API not enabled, or network error). Confirm the key at aistudio.google.com and enable the Generative Language API, then restart.",
+  api_key_service_blocked:
+    "Your GCP API key cannot call the Generative Language API (403 API_KEY_SERVICE_BLOCKED). Easiest fix: create a new key at aistudio.google.com/apikey and set GEMINI_API_KEY in .env. Or in Google Cloud Console → APIs & Services → enable “Generative Language API”, then edit your API key → API restrictions → allow that API. Restart the server after changing .env.",
+  default:
+    "Gemini is not active. Responses use simple keyword rules — promo/copy prompts may repeat the same bundle.",
+};
 
 let lastMessage = "";
 let loadingEl = null;
@@ -319,6 +335,23 @@ async function sendMessage(text) {
   }
 }
 
+function updateFallbackBanner(data) {
+  if (!fallbackBanner || !fallbackBannerText) return;
+
+  const initializing = !data.startup_complete || data.initializing;
+  const inFallback = Boolean(data.fallback_mode);
+
+  if (initializing || !inFallback) {
+    fallbackBanner.classList.add("hidden");
+    return;
+  }
+
+  const reason = data.fallback_reason || "default";
+  fallbackBannerText.textContent =
+    FALLBACK_BANNER_COPY[reason] || FALLBACK_BANNER_COPY.default;
+  fallbackBanner.classList.remove("hidden");
+}
+
 async function pollHealthOnce() {
   try {
     const res = await fetch("/health", { method: "GET" });
@@ -326,21 +359,43 @@ async function pollHealthOnce() {
     const data = await res.json();
 
     const mongoOk = data.database === "connected";
-    const geminiOk = Boolean(data.gemini);
+    const geminiLive = !data.fallback_mode && data.startup_complete;
+    const geminiConfigured = Boolean(data.gemini_configured ?? data.gemini);
+    const inFallback = Boolean(data.fallback_mode) && data.startup_complete;
 
     pillMongo.classList.toggle("is-ok", mongoOk);
     pillMongo.classList.toggle("is-warn", !mongoOk);
     pillMongo.classList.remove("is-error");
 
-    pillGemini.classList.toggle("is-ok", geminiOk);
-    pillGemini.classList.toggle("is-warn", !geminiOk);
-    pillGemini.classList.remove("is-error");
+    pillGemini.classList.remove("is-ok", "is-warn", "is-error");
+    if (geminiLive) {
+      pillGemini.classList.add("is-ok");
+    } else if (inFallback || (geminiConfigured && !data.startup_complete)) {
+      pillGemini.classList.add("is-warn");
+    } else if (!geminiConfigured && data.startup_complete) {
+      pillGemini.classList.add("is-error");
+    }
 
-    footerDot.classList.toggle("is-ok", mongoOk && geminiOk);
+    if (pillGeminiLabel) {
+      if (geminiLive) pillGeminiLabel.textContent = "Gemini";
+      else if (inFallback) pillGeminiLabel.textContent = "Fallback";
+      else if (!data.startup_complete) pillGeminiLabel.textContent = "Gemini";
+      else pillGeminiLabel.textContent = "Gemini";
+    }
+
+    footerDot.classList.toggle("is-ok", mongoOk && geminiLive);
+
+    updateFallbackBanner(data);
 
     const pieces = [
       `MongoDB ${mongoOk ? "Connected" : "Initializing"}`,
-      `Gemini ${geminiOk ? "Active" : "Config needed"}`,
+      geminiLive
+        ? `Gemini Active${data.agent_backend ? ` (${data.agent_backend})` : ""}`
+        : inFallback
+          ? "Gemini Fallback"
+          : geminiConfigured
+            ? "Gemini Starting"
+            : "Gemini Config needed",
       `MCP ${data.mcp === "connected" ? "Ready" : "Initializing"}`,
     ];
     footerStatusText.textContent = `Status: ${pieces.join(" • ")}`;
@@ -349,9 +404,11 @@ async function pollHealthOnce() {
     pillMongo.classList.add("is-error");
     pillGemini.classList.remove("is-ok", "is-warn");
     pillGemini.classList.add("is-error");
+    if (pillGeminiLabel) pillGeminiLabel.textContent = "Gemini";
     footerDot.classList.remove("is-ok");
     footerStatusText.textContent =
       "Status: Server unreachable • Check that the backend is running";
+    if (fallbackBanner) fallbackBanner.classList.add("hidden");
   }
 }
 

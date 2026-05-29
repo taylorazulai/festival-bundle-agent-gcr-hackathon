@@ -54,7 +54,7 @@ Open the [live demo](https://festival-agent-t5j6ocuqwa-uc.a.run.app) and try:
 | Technology | Role |
 |------------|------|
 | [Google Cloud Agent Builder](https://cloud.google.com/agent-builder) | Agent orchestration and multi-step reasoning |
-| [Gemini 2.0 Flash](https://deepmind.google/technologies/gemini/) | LLM for natural language understanding and tool selection |
+| [Gemini 3.1 Flash Lite](https://ai.google.dev/gemini-api/docs/models) | LLM for natural language understanding and tool selection |
 | [MongoDB Atlas](https://www.mongodb.com/atlas) | Live production database for festival inventory |
 | [MongoDB MCP Server](https://github.com/mongodb-js/mongodb-mcp-server) | Model Context Protocol integration for tool-based data access |
 | [FastAPI](https://fastapi.tiangolo.com/) | Python backend API |

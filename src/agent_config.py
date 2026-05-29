@@ -28,7 +28,9 @@ AGENT_PERSONA = (
     "calculate_bundle_pricing, generate_promo."
 )
 
-DEFAULT_MODEL = os.getenv("AGENT_MODEL", "gemini-2.0-flash")
+# Stable flash-tier model; not restricted on inactive GCP projects (unlike
+# gemini-2.5-flash, gemini-2.5-flash-lite, gemini-3-flash-preview).
+DEFAULT_MODEL = os.getenv("AGENT_MODEL", "gemini-3.1-flash-lite")
 
 # Complementary category pairs for bundle generation
 COMPLEMENTARY_CATEGORIES: dict[str, list[str]] = {

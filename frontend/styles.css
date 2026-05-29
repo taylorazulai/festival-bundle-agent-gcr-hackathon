@@ -607,6 +607,41 @@ input {
   transform: scale(1.05);
 }
 
+/* Fallback mode banner */
+.fallback-banner {
+  margin: 0;
+  padding: 0.65rem 1rem;
+  background: #fffbeb;
+  border-bottom: 1px solid #fcd34d;
+  color: #78350f;
+}
+
+.fallback-banner-inner {
+  display: flex;
+  gap: 0.65rem;
+  align-items: flex-start;
+  max-width: 72rem;
+  margin: 0 auto;
+}
+
+.fallback-banner-icon {
+  font-size: 1.1rem;
+  flex-shrink: 0;
+  line-height: 1.4;
+}
+
+.fallback-banner-title {
+  font-weight: 600;
+  font-size: 0.8125rem;
+  margin-bottom: 0.1rem;
+}
+
+.fallback-banner-message {
+  font-size: 0.8125rem;
+  line-height: 1.45;
+  color: #92400e;
+}
+
 /* Error */
 .error-card {
   margin: 0 1rem 0.5rem;
