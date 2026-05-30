@@ -1,6 +1,7 @@
 # 🎪 Festival Bundle Agent
 
 [![Live Demo](https://img.shields.io/badge/Live%20Demo-festival--agent--t5j6ocuqwa--uc.a.run.app-orange?style=for-the-badge)](https://festival-agent-t5j6ocuqwa-uc.a.run.app)
+[![Demo Video](https://img.shields.io/badge/Demo%20Video-Watch-1ab7ea?style=for-the-badge&logo=vimeo&logoColor=white)](https://vimeo.com/1196964261)
 [![Google Cloud](https://img.shields.io/badge/Built%20with-Google%20Cloud-4285F4?logo=google-cloud&logoColor=white)](https://cloud.google.com/agent-builder)
 [![MongoDB](https://img.shields.io/badge/Data%20Layer-MongoDB%20Atlas-47A248?logo=mongodb&logoColor=white)](https://www.mongodb.com/atlas)
 [![License](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
@@ -10,7 +11,7 @@
 
 ## 🎪 Live Demo
 
-**[Try it now →](https://festival-agent-t5j6ocuqwa-uc.a.run.app)**
+**[Try it now →](https://festival-agent-t5j6ocuqwa-uc.a.run.app)** | **[📹 Demo video](https://vimeo.com/1196964261)**
 
 ![Festival Bundle Agent — Welcome screen with inventory tools](docs/welcome-screen.png)
 
@@ -25,8 +26,7 @@
 
 ## DEMO
 
-📹 Demo  
-[Watch the demo video](YOUR_YOUTUBE_LINK_HERE)
+📹 [Watch the demo video](https://vimeo.com/1196964261)
 
 ---
 
